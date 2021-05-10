@@ -71,6 +71,34 @@ public class ActivitiDemo {
     @Test
     public void testCompleteTask(){
         TaskService taskService = processEngine.getTaskService();
-        taskService.complete("2505");
+        //张三发起流程
+        /*taskService.complete("2505");*/
+
+        //经理审批
+        /*Task task = taskService.createTaskQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .taskAssignee("Jerry")
+                .singleResult();*/
+
+        //总经理审批
+        /*Task task = taskService.createTaskQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .taskAssignee("Jack")
+                .singleResult();*/
+
+        //财务审批
+        Task task = taskService.createTaskQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .taskAssignee("Rose")
+                .singleResult();
+
+        System.out.println("流程实例的ID：" + task.getProcessInstanceId());
+        System.out.println("任务的ID：" + task.getId());
+        System.out.println("任务的负责人：" + task.getAssignee());
+        System.out.println("任务的名称：" + task.getName());
+
+        taskService.complete(task.getId());
     }
+
+
 }
