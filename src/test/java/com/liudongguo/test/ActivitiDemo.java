@@ -3,6 +3,8 @@ package com.liudongguo.test;
 import org.activiti.engine.*;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
@@ -100,5 +102,37 @@ public class ActivitiDemo {
         taskService.complete(task.getId());
     }
 
+
+    /**
+     * 流程定义信息的查询
+     */
+    @Test
+    public void testdefinition(){
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        RepositoryService repositoryService = processEngine.getRepositoryService();
+        ProcessDefinitionQuery definitionQuery = repositoryService.createProcessDefinitionQuery();
+        List<ProcessDefinition> list = definitionQuery.processDefinitionKey("myEvection")
+                .orderByProcessDefinitionVersion()
+                .desc()
+                .list();
+        for (ProcessDefinition definition : list) {
+            System.out.println("流程定义的ID：" + definition.getId());
+            System.out.println("流程定义的名称：" + definition.getName());
+            System.out.println("流程定义的KEY：" + definition.getKey());
+            System.out.println("流程定义的版本：" + definition.getVersion());
+            System.out.println("流程定义的部署ID：" + definition.getDeploymentId());
+        }
+    }
+
+    /**
+     * 删除流程部署信息
+     */
+    @Test
+    public void testDeleteDeployment(){
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        RepositoryService repositoryService = processEngine.getRepositoryService();
+
+        repositoryService.deleteDeployment("1");
+    }
 
 }
