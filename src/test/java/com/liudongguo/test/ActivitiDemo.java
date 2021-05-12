@@ -1,6 +1,8 @@
 package com.liudongguo.test;
 
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -26,13 +28,15 @@ public class ActivitiDemo {
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         Deployment deployment = repositoryService.createDeployment()
-                .name("出差申请流程")
+                .name("出差申请流程2")
                 .addClasspathResource("bpmn/evection.bpmn")
                 .addClasspathResource("bpmn/evection.png")
                 .deploy();
 
         System.out.println("流程部署ID：" + deployment.getId());
         System.out.println("流程部署name：" + deployment.getName());
+
+        repositoryService.deleteDeployment("55001");
     }
 
     /**
@@ -111,7 +115,7 @@ public class ActivitiDemo {
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RepositoryService repositoryService = processEngine.getRepositoryService();
         ProcessDefinitionQuery definitionQuery = repositoryService.createProcessDefinitionQuery();
-        List<ProcessDefinition> list = definitionQuery.processDefinitionKey("myEvection")
+        List<ProcessDefinition> list = definitionQuery.processDefinitionKey(processDefinitionKey)
                 .orderByProcessDefinitionVersion()
                 .desc()
                 .list();
@@ -129,10 +133,32 @@ public class ActivitiDemo {
      */
     @Test
     public void testDeleteDeployment(){
-        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
         repositoryService.deleteDeployment("1");
+    }
+
+    @Test
+    public void testhis(){
+        HistoryService historyService = processEngine.getHistoryService();
+
+        //获取 actinst表的查询对象
+        HistoricActivityInstanceQuery instanceQuery = historyService.createHistoricActivityInstanceQuery();
+
+        instanceQuery.processInstanceId("2501");
+
+        instanceQuery.orderByHistoricActivityInstanceStartTime().asc();
+
+        List<HistoricActivityInstance> list = instanceQuery.list();
+        for (HistoricActivityInstance hi : list) {
+            System.out.println(hi.getActivityId());
+            System.out.println(hi.getActivityName());
+            System.out.println(hi.getProcessDefinitionId());
+            System.out.println(hi.getProcessInstanceId());
+            System.out.println("<==========================>");
+        }
+
+
     }
 
 }
