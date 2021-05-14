@@ -1,13 +1,12 @@
 package com.liudongguo.test;
 
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngines;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
+import org.activiti.engine.*;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.task.Task;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,5 +56,24 @@ public class TestAssigneeUel {
         RuntimeService runtimeService = processEngine.getRuntimeService();
 
         runtimeService.startProcessInstanceByKey("testListener");
+    }
+    static String processDefinitionKey = "myEvection-uel";
+
+    @Test
+    public void testtask(){
+
+        TaskService taskService = processEngine.getTaskService();
+        List<Task> list = taskService.createTaskQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .taskAssignee("张三")
+                .list();
+
+        for (Task task : list) {
+            System.out.println("----------------------------");
+            System.out.println("流程实例id： " + task.getProcessInstanceId());
+            System.out.println("任务id： " + task.getId());
+            System.out.println("任务负责人： " + task.getAssignee());
+            System.out.println("任务名称： " + task.getName());
+        }
     }
 }
